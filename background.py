@@ -1,4 +1,5 @@
 import numpy as np
+import sympy as sym
 import matplotlib.pyplot as plt
 
 from matplotlib.patches import Arc
@@ -15,6 +16,11 @@ def pol2cart(rho, phi):
     x = rho * np.cos(phi)
     y = rho * np.sin(phi)
     return (x, y)
+
+def pol2cart(rho, phi):
+    x = rho * sym.cos(phi)
+    y = rho * sym.sin(phi)
+    return (x,y)
 
 # a simple function to convert complex number from cartesian to polar notation
 # the function takes the whole number as an argument and can return the angle in degrees
