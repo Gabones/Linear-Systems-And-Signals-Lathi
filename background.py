@@ -25,20 +25,51 @@ def pol2cart(rho, phi):
 # a simple function to convert complex number from cartesian to polar notation
 # the function takes the whole number as an argument and can return the angle in degrees
 def cart2pol(z, deg=False):
-  mag = np.abs(z)
-  angle = np.angle(z, deg=deg)
-  return (mag, angle)
+    mag = np.abs(z)
+    angle = np.angle(z, deg=deg)
+    return (mag, angle)
 
 def increase_font():
-  from IPython.display import Javascript
-  display(Javascript('''
-  for (rule of document.styleSheets[0].cssRules){
-    if (rule.selectorText=='body') {
-      rule.style.fontSize = '18px'
-      break
+    from IPython.display import Javascript
+    display(Javascript('''
+    for (rule of document.styleSheets[0].cssRules){
+      if (rule.selectorText=='body') {
+        rule.style.fontSize = '18px'
+        break
+      }
     }
-  }
-  '''))
+    '''))
+
+def simple_cramer(mat, constant):
+    D = np.linalg.det(mat)
+    mat1 = np.array([constant, mat[:, 1], mat[:, 2]])
+    mat2 = np.array([mat[:, 0], constant, mat[:, 2]])
+    mat3 = np.array([mat[:, 0], mat[:, 1], constant])
+    Dx = np.linalg.det([mat1, mat2, mat3])
+    X = Dx/D
+    return X
+
+# https://www.computersciencemaster.com.br/como-resolver-um-sistema-de-equacoes-usando-python/
+# https://stackoverflow.com/questions/70323836/solving-system-of-linear-equation-using-cramers-method-in-python
+def complex_cramer(a, b):
+    mask = np.broadcast_to(np.diag([1,1,1]), [3, 3, 3]).swapaxes(0, 1)
+    Ms = np.where(mask, np.repeat(b, 3).reshape(3, 3), a)
+    return np.linalg.det(Ms) / np.linalg.det(a)
+
+# https://stackoverflow.com/questions/17129290/numpy-2d-and-1d-array-to-latex-bmatrix
+def bmatrix(a):
+    """Returns a LaTeX bmatrix
+
+    :a: numpy array
+    :returns: LaTeX bmatrix as a string
+    """
+    if len(a.shape) > 2:
+        raise ValueError('bmatrix can at most display two dimensions')
+    lines = str(a).replace('[', '').replace(']', '').splitlines()
+    rv = [r'\begin{bmatrix}']
+    rv += ['  ' + ' & '.join(l.split()) + r'\\' for l in lines]
+    rv +=  [r'\end{bmatrix}']
+    return '\n'.join(rv)
 
 class AngleAnnotation(Arc):
     """
